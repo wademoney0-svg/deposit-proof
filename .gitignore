@@ -4,3 +4,4 @@ dist
 .DS_Store
 .gh-token.json
 .*.log
+.gh-auth-header
