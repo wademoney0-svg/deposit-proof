@@ -252,6 +252,8 @@ label {
 input,
 textarea {
   font: inherit;
+  /* Anything below 16px makes iOS Safari auto-zoom on focus */
+  font-size: 16px;
   color: var(--text);
   background: var(--surface);
   border: 1px solid var(--border);
@@ -333,7 +335,6 @@ textarea:focus {
 }
 
 .caption {
-  font-size: 13px;
   padding: 8px 10px;
 }
 
