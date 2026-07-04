@@ -1,0 +1,16 @@
+{
+  "url": "https://api.github.com/repos/wademoney0-svg/depositcam/pages",
+  "status": "built",
+  "cname": "depositcam.com",
+  "custom_404": false,
+  "html_url": "http://depositcam.com/",
+  "build_type": "legacy",
+  "source": {
+    "branch": "gh-pages",
+    "path": "/"
+  },
+  "public": true,
+  "protected_domain_state": null,
+  "pending_domain_unverified_at": null,
+  "https_enforced": false
+}
