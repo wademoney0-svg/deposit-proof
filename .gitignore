@@ -5,3 +5,5 @@ dist
 .gh-token.json
 .*.log
 .gh-auth-header
+.pw-browsers
+.chrome.zip

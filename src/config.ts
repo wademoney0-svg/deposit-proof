@@ -25,11 +25,13 @@ export function markUnlocked(): void {
 }
 
 /** Detects the ?paid=1 redirect from Stripe and persists the unlock. */
-export function absorbPaymentRedirect(): void {
+export function absorbPaymentRedirect(): boolean {
   const url = new URL(window.location.href)
   if (url.searchParams.get('paid') === '1') {
     markUnlocked()
     url.searchParams.delete('paid')
     window.history.replaceState(null, '', url.pathname + url.search + url.hash)
+    return true
   }
+  return false
 }

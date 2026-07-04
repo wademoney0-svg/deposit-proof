@@ -11,8 +11,12 @@ import {
   isUnlocked,
   paywallEnabled,
 } from './config'
+import { track } from './analytics'
 
-absorbPaymentRedirect()
+if (absorbPaymentRedirect()) {
+  // Delay so the async-loaded analytics script has a chance to be ready.
+  setTimeout(() => track('purchase-completed'), 2000)
+}
 
 type View =
   | { name: 'home' }
@@ -55,7 +59,8 @@ export default function App() {
     return (
       <NewInspection
         onCancel={() => setView({ name: 'home' })}
-        onCreate={async (inspection) => {
+          onCreate={async (inspection) => {
+          track('walkthrough-started')
           await upsert(inspection)
           setView({ name: 'inspection', id: inspection.id })
         }}
@@ -77,7 +82,9 @@ export default function App() {
         showPaywall={showPaywall}
         onClosePaywall={() => setShowPaywall(false)}
         onExport={async () => {
+          track('export-clicked')
           if (paywallEnabled() && !isUnlocked()) {
+            track('paywall-shown')
             setShowPaywall(true)
             return
           }
