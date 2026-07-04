@@ -4,6 +4,15 @@ import { DEFAULT_ROOMS, SHOT_CHECKLIST, uid } from './types'
 import { deleteInspection, listInspections, saveInspection } from './db'
 import { processCapture } from './photo'
 import { generateReport } from './pdf'
+import {
+  STRIPE_PAYMENT_LINK,
+  UNLOCK_PRICE,
+  absorbPaymentRedirect,
+  isUnlocked,
+  paywallEnabled,
+} from './config'
+
+absorbPaymentRedirect()
 
 type View =
   | { name: 'home' }
@@ -19,6 +28,7 @@ export default function App() {
   const [inspections, setInspections] = useState<Inspection[]>([])
   const [view, setView] = useState<View>({ name: 'home' })
   const [busy, setBusy] = useState(false)
+  const [showPaywall, setShowPaywall] = useState(false)
 
   useEffect(() => {
     listInspections().then(setInspections)
@@ -64,7 +74,13 @@ export default function App() {
           await upsert({ ...current, rooms: [...current.rooms, newRoom(name)] })
         }}
         onDelete={() => remove(current.id)}
+        showPaywall={showPaywall}
+        onClosePaywall={() => setShowPaywall(false)}
         onExport={async () => {
+          if (paywallEnabled() && !isUnlocked()) {
+            setShowPaywall(true)
+            return
+          }
           setBusy(true)
           try {
             await generateReport(current)
@@ -253,6 +269,8 @@ function NewInspection({
 function InspectionDetail({
   inspection,
   busy,
+  showPaywall,
+  onClosePaywall,
   onBack,
   onOpenRoom,
   onAddRoom,
@@ -261,6 +279,8 @@ function InspectionDetail({
 }: {
   inspection: Inspection
   busy: boolean
+  showPaywall: boolean
+  onClosePaywall: () => void
   onBack: () => void
   onOpenRoom: (roomId: string) => void
   onAddRoom: (name: string) => void
@@ -317,6 +337,33 @@ function InspectionDetail({
         </button>
         <button className="btn danger-link" onClick={onDelete}>
           Delete walkthrough
+        </button>
+      </div>
+
+      {showPaywall && <PaywallModal onClose={onClosePaywall} />}
+    </div>
+  )
+}
+
+function PaywallModal({ onClose }: { onClose: () => void }) {
+  return (
+    <div className="modal-backdrop" onClick={onClose}>
+      <div className="modal" onClick={(e) => e.stopPropagation()}>
+        <h2>Unlock PDF export</h2>
+        <p className="muted">
+          Your walkthrough is saved on this device. A one-time payment of {UNLOCK_PRICE} unlocks
+          PDF reports forever — every walkthrough, every property.
+        </p>
+        <ul className="perk-list">
+          <li>Dispute-ready PDF with timestamped, GPS-stamped photos</li>
+          <li>Unlimited exports on this device</li>
+          <li>Send it to your landlord or small-claims court</li>
+        </ul>
+        <a className="btn primary big" href={STRIPE_PAYMENT_LINK}>
+          Unlock for {UNLOCK_PRICE}
+        </a>
+        <button className="btn danger-link" onClick={onClose}>
+          Not now
         </button>
       </div>
     </div>

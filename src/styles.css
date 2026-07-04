@@ -387,3 +387,48 @@ textarea:focus {
   border-radius: 16px;
   padding: 18px;
 }
+
+/* Paywall modal */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: grid;
+  place-items: end center;
+  z-index: 50;
+}
+
+.modal {
+  width: 100%;
+  max-width: 560px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px 20px 0 0;
+  padding: 24px 20px calc(24px + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.modal h2 {
+  margin: 0;
+  font-size: 21px;
+}
+
+.modal p {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.modal .btn {
+  text-align: center;
+  text-decoration: none;
+}
+
+.perk-list {
+  margin: 0;
+  padding-left: 20px;
+  color: var(--muted);
+  line-height: 1.8;
+  font-size: 14.5px;
+}
