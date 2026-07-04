@@ -31,7 +31,7 @@ export async function generateReport(inspection: Inspection): Promise<void> {
   doc.setFontSize(12)
   doc.setFont('helvetica', 'normal')
   doc.setTextColor(180, 190, 200)
-  doc.text('Prepared with DepositProof', MARGIN, 40)
+  doc.text('Prepared with DepositCam', MARGIN, 40)
 
   doc.setTextColor(20, 20, 20)
   let y = 88
@@ -115,5 +115,5 @@ export async function generateReport(inspection: Inspection): Promise<void> {
   }
 
   const slug = inspection.address.trim().replace(/[^a-z0-9]+/gi, '-').toLowerCase() || 'report'
-  doc.save(`deposit-proof-${inspection.type}-${slug}.pdf`)
+  doc.save(`depositcam-${inspection.type}-${slug}.pdf`)
 }

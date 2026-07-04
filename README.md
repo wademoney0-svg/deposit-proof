@@ -1,8 +1,8 @@
-# DepositProof
+# DepositCam
 
 Timestamped photo evidence of your rental's condition, so your security deposit comes back to you.
 
-Renters lose deposits because they can't prove what the apartment looked like at move-in or move-out. DepositProof guides you room by room through a photo walkthrough, burns the date, time, and GPS coordinates into every photo at the moment of capture, and exports a polished PDF condition report you can send to a landlord — or bring to small-claims court.
+Renters lose deposits because they can't prove what the apartment looked like at move-in or move-out. DepositCam guides you room by room through a photo walkthrough, burns the date, time, and GPS coordinates into every photo at the moment of capture, and exports a polished PDF condition report you can send to a landlord — or bring to small-claims court.
 
 ## Features
 
@@ -12,6 +12,7 @@ Renters lose deposits because they can't prove what the apartment looked like at
 - Everything is stored locally on your device (IndexedDB) — no account, no server, private by default
 - One-tap export of a dispute-ready PDF report with a cover page, room sections, and page numbers
 - Mobile-first PWA: installable to the home screen, works offline once loaded
+- Optional Stripe paywall on PDF export (configured in `src/config.ts`)
 
 ## Tech stack
 
@@ -29,3 +30,13 @@ npm run preview  # preview the production build
 ```
 
 Note: camera capture and geolocation require a secure context (HTTPS or localhost).
+
+## Deployment
+
+The app deploys to GitHub Pages from the `gh-pages` branch:
+
+```bash
+GH_PAGES=1 npm run build   # builds with the /depositcam/ base path
+```
+
+Push the `dist/` output to the `gh-pages` branch to publish.

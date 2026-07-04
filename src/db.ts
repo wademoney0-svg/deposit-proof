@@ -1,7 +1,7 @@
 import { openDB, type IDBPDatabase } from 'idb'
 import type { Inspection } from './types'
 
-const DB_NAME = 'deposit-proof'
+const DB_NAME = 'depositcam'
 const STORE = 'inspections'
 
 let dbPromise: Promise<IDBPDatabase> | null = null

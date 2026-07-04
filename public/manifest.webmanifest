@@ -1,6 +1,6 @@
 {
-  "name": "DepositProof",
-  "short_name": "DepositProof",
+  "name": "DepositCam",
+  "short_name": "DepositCam",
   "description": "Timestamped move-in/move-out photo evidence for getting your security deposit back.",
   "start_url": ".",
   "display": "standalone",
