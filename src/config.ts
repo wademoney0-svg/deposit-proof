@@ -6,7 +6,7 @@
  * confirmation behavior to redirect to:
  *   https://wademoney0-svg.github.io/deposit-proof/?paid=1
  */
-export const STRIPE_PAYMENT_LINK = ''
+export const STRIPE_PAYMENT_LINK = 'https://buy.stripe.com/eVq6oB4OAfcm3dXbwzfUQ00'
 
 export const UNLOCK_PRICE = '$4.99'
 
