@@ -33,6 +33,7 @@ export default function App() {
   const [view, setView] = useState<View>({ name: 'home' })
   const [busy, setBusy] = useState(false)
   const [showPaywall, setShowPaywall] = useState(false)
+  const [showEmailNudge, setShowEmailNudge] = useState(false)
 
   useEffect(() => {
     listInspections().then(setInspections)
@@ -81,6 +82,8 @@ export default function App() {
         onDelete={() => remove(current.id)}
         showPaywall={showPaywall}
         onClosePaywall={() => setShowPaywall(false)}
+        showEmailNudge={showEmailNudge}
+        onCloseEmailNudge={() => setShowEmailNudge(false)}
         onExport={async () => {
           track('export-clicked')
           if (paywallEnabled() && !isUnlocked()) {
@@ -91,6 +94,8 @@ export default function App() {
           setBusy(true)
           try {
             await generateReport(current)
+            track('report-exported')
+            setShowEmailNudge(true)
           } finally {
             setBusy(false)
           }
@@ -278,6 +283,8 @@ function InspectionDetail({
   busy,
   showPaywall,
   onClosePaywall,
+  showEmailNudge,
+  onCloseEmailNudge,
   onBack,
   onOpenRoom,
   onAddRoom,
@@ -288,6 +295,8 @@ function InspectionDetail({
   busy: boolean
   showPaywall: boolean
   onClosePaywall: () => void
+  showEmailNudge: boolean
+  onCloseEmailNudge: () => void
   onBack: () => void
   onOpenRoom: (roomId: string) => void
   onAddRoom: (name: string) => void
@@ -348,6 +357,46 @@ function InspectionDetail({
       </div>
 
       {showPaywall && <PaywallModal onClose={onClosePaywall} />}
+      {showEmailNudge && <EmailNudgeModal inspection={inspection} onClose={onCloseEmailNudge} />}
+    </div>
+  )
+}
+
+function EmailNudgeModal({
+  inspection,
+  onClose,
+}: {
+  inspection: Inspection
+  onClose: () => void
+}) {
+  const typeLabel = inspection.type === 'move-in' ? 'Move-in' : 'Move-out'
+  const place = inspection.unit ? `${inspection.address}, ${inspection.unit}` : inspection.address
+  const subject = `${typeLabel} condition report — ${place}`
+  const body =
+    `Hi,\n\nAttached is the ${typeLabel.toLowerCase()} photo condition report for ${place}, ` +
+    `documenting its condition as of ${new Date().toLocaleDateString()}. ` +
+    `Each photo is stamped with the date, time and location it was taken.\n\n` +
+    `Please keep this for your records.\n\n(Report attached — generated with DepositCam, depositcam.com)`
+  const mailto = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+
+  return (
+    <div className="modal-backdrop" onClick={onClose}>
+      <div className="modal" onClick={(e) => e.stopPropagation()}>
+        <h2>Report downloaded ✓</h2>
+        <p className="muted">
+          Now make it count: email it to your landlord today. Their inbox timestamp becomes
+          independent proof of when this report existed — your strongest defense in a dispute.
+        </p>
+        <p className="muted">
+          Attach the PDF that just downloaded, and send a copy to yourself too.
+        </p>
+        <a className="btn primary big" href={mailto} onClick={() => track('email-nudge-used')}>
+          Email it now
+        </a>
+        <button className="btn danger-link" onClick={onClose}>
+          Maybe later
+        </button>
+      </div>
     </div>
   )
 }
