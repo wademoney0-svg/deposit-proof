@@ -87,15 +87,22 @@ export async function generateReport(inspection: Inspection): Promise<void> {
 
     for (const photo of room.photos) {
       const { w, h } = await imageSize(photo.dataUrl)
-      const drawW = CONTENT_W
-      const drawH = (h / w) * drawW
       const captionH = 12
+      // Cap height so a portrait photo always fits on a page below the room
+      // header with room for its caption; keep aspect ratio and center it.
+      const maxH = PAGE_H - MARGIN * 2 - captionH - 22
+      let drawW = CONTENT_W
+      let drawH = (h / w) * drawW
+      if (drawH > maxH) {
+        drawH = maxH
+        drawW = (w / h) * drawH
+      }
 
       if (cy + drawH + captionH > PAGE_H - MARGIN) {
         doc.addPage()
         cy = MARGIN
       }
-      doc.addImage(photo.dataUrl, 'JPEG', MARGIN, cy, drawW, drawH)
+      doc.addImage(photo.dataUrl, 'JPEG', MARGIN + (CONTENT_W - drawW) / 2, cy, drawW, drawH)
       cy += drawH + 5
       doc.setFontSize(9)
       doc.setTextColor(90, 90, 90)

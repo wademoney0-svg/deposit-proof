@@ -41,7 +41,7 @@ const kitchen = `
 </svg>`
 
 const bathroom = `
-<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1200">
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1600">
   <rect width="1600" height="1200" fill="#dfe7ea"/>
   <g stroke="#c3ced3" stroke-width="4">
     ${Array.from({ length: 8 }, (_, i) => `<line x1="0" y1="${150 * (i + 1)}" x2="1600" y2="${150 * (i + 1)}"/>`).join('')}

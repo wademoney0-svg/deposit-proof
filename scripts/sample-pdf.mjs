@@ -79,7 +79,7 @@ await documentRoom(
 )
 await documentRoom(
   'Bathroom',
-  ['shots/sample/bathroom.jpg'],
+  ['shots/sample/bathroom.jpg', 'shots/sample/bathroom.jpg'],
   '',
   'Tub, vanity and tile in good condition',
 )
