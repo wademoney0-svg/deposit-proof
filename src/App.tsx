@@ -13,7 +13,11 @@ import {
 } from './config'
 import { track } from './analytics'
 
-if (absorbPaymentRedirect()) {
+/** Remembers which walkthrough the renter was exporting when they hit the paywall. */
+const PENDING_EXPORT_KEY = 'dp_pending_export'
+
+const purchaseJustCompleted = absorbPaymentRedirect()
+if (purchaseJustCompleted) {
   // Delay so the async-loaded analytics script has a chance to be ready.
   setTimeout(() => track('purchase-completed'), 2000)
 }
@@ -36,7 +40,24 @@ export default function App() {
   const [showEmailNudge, setShowEmailNudge] = useState(false)
 
   useEffect(() => {
-    listInspections().then(setInspections)
+    listInspections().then((list) => {
+      setInspections(list)
+      if (!purchaseJustCompleted) return
+      // Resume the export the renter paid for: reopen their walkthrough,
+      // build the PDF right away and offer to email it.
+      const pendingId = localStorage.getItem(PENDING_EXPORT_KEY)
+      localStorage.removeItem(PENDING_EXPORT_KEY)
+      const inspection = list.find((i) => i.id === pendingId)
+      if (!inspection) return
+      setView({ name: 'inspection', id: inspection.id })
+      setBusy(true)
+      generateReport(inspection)
+        .then(() => {
+          track('report-exported')
+          setShowEmailNudge(true)
+        })
+        .finally(() => setBusy(false))
+    })
   }, [])
 
   async function upsert(inspection: Inspection) {
@@ -88,6 +109,7 @@ export default function App() {
           track('export-clicked')
           if (paywallEnabled() && !isUnlocked()) {
             track('paywall-shown')
+            localStorage.setItem(PENDING_EXPORT_KEY, current.id)
             setShowPaywall(true)
             return
           }
