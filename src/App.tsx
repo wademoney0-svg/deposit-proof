@@ -225,6 +225,8 @@ function Home({
           </ol>
         </section>
       )}
+
+      <footer className="studio-credit">A Wade Foundry app</footer>
     </div>
   )
 }

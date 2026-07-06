@@ -113,12 +113,13 @@ export async function generateReport(inspection: Inspection): Promise<File> {
     }
   }
 
-  // Page numbers
+  // Page footer: studio credit (left) + page number (right)
   const pages = doc.getNumberOfPages()
   for (let i = 1; i <= pages; i++) {
     doc.setPage(i)
     doc.setFontSize(8.5)
     doc.setTextColor(140, 140, 140)
+    doc.text('DepositCam · a Wade Foundry app', MARGIN, PAGE_H - 8)
     doc.text(`Page ${i} of ${pages}`, PAGE_W - MARGIN, PAGE_H - 8, { align: 'right' })
   }
 
